@@ -76,7 +76,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction/index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="architecture/index.html"><strong aria-hidden="true">2.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="sensor-manager/index.html"><strong aria-hidden="true">3.</strong> Sensor Manager</a></li><li class="chapter-item expanded "><a href="virtual-sensor/index.html"><strong aria-hidden="true">4.</strong> Virtual Sensor</a></li><li class="chapter-item expanded "><a href="devops/index.html"><strong aria-hidden="true">5.</strong> Devops</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="devops/GithubWorkflow.html"><strong aria-hidden="true">5.1.</strong> Github workflows settings</a></li><li class="chapter-item expanded "><a href="devops/LXCContainer.html"><strong aria-hidden="true">5.2.</strong> Linux container (LXC)</a></li></ol></li><li class="chapter-item expanded "><a href="user-guides/index.html"><strong aria-hidden="true">6.</strong> User guides</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="swot.html"><strong aria-hidden="true">1.</strong> Task BTL Mobile</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -135,173 +135,66 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>From a thesis in <a href="https://hcmut.edu.vn/">Ho Chi Minh University of Technology</a> ...</p>
-<p>Hello there !</p>
-<h2 id="our-hpc-system-problem"><a class="header" href="#our-hpc-system-problem">Our HPC system problem</a></h2>
-<p>Specify problems in HCMUT's HPC system, its user story, demands ...</p>
-<h2 id="why-this-project"><a class="header" href="#why-this-project">Why this project</a></h2>
-<p>Should compare to other monitoring tools such as <code>Zabbix</code>, <code>Prometheus</code> ...</p>
-<p>Which problems do this project resolve ? ...</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="system-architecture"><a class="header" href="#system-architecture">System Architecture</a></h1>
-<p>Description about system architect and summarize components in it ...</p>
-<p>Link to relate document parts.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="sensor-manager"><a class="header" href="#sensor-manager">Sensor manager</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="virtual-sensor"><a class="header" href="#virtual-sensor">Virtual Sensor</a></h1>
-<p>Virtual sensor descriptions.</p>
-<h2 id="helpful-libraries"><a class="header" href="#helpful-libraries">Helpful libraries</a></h2>
+                        <h1 id="analyze-5-bus-mobile-apps-using-swot-methodologies"><a class="header" href="#analyze-5-bus-mobile-apps-using-swot-methodologies">Analyze 5 bus mobile apps using SWOT methodologies</a></h1>
+<h2 id="busmap"><a class="header" href="#busmap">BusMap</a></h2>
+<h3 id="các-tính-năng"><a class="header" href="#các-tính-năng">Các tính năng</a></h3>
 <ul>
-<li><a href="https://github.com/nlohmann/json">JSON in modern C++</a></li>
-<li><a href="https://www.boost.org/">Boost C++ Libraries</a></li>
-<li><a href="https://docs.confluent.io/kafka-clients/librdkafka/current/overview.html">Kafka Client</a></li>
-</ul>
-<h2 id="data-collection"><a class="header" href="#data-collection">Data collection</a></h2>
-<h3 id="payloads-content-interfaces"><a class="header" href="#payloads-content-interfaces">Payload's content interfaces</a></h3>
-<pre><code class="language-typescript">interface Process {
-    name: string;
-    pid: number
-    parentPid: number
-    uid: number
-    gid: number
-    executePath: string
-    command: string
-    virtualMemoryUsage: number  // In KB
-    physicalMemoryUsage: number // In KB
-    cpuTime: number             // In ms
-    cpuUsage: number            // In %
-    networkInBandwidth: number  // What interface ???
-    networkOutBandwidth: number
-    ioWrite: number             // In KB
-    ioRead: number              // In KB
-}
-
-interface NetworkInterface {
-    name: string
-    inBandwidth: number
-    outBandwidth: number
-}
-
-interface Memory {
-    used: number
-    available: number
-    swapUsed?: number
-    swapFree?: number
-}
-
-interface Cpu {
-    user: number
-    nice: number
-    system: number
-    iowait: number
-    steal: number
-    idle: number
-}
-
-interface IOUsage {
-    deviceName: string
-    readPerSecond: number
-    writePerSecond: number
-}
-
-interface DiskUsage {
-    filesystemName: string
-    used: number // In KB
-    available: number // In KB
-}
-</code></pre>
-<h3 id="full-payload-interface"><a class="header" href="#full-payload-interface">Full payload interface</a></h3>
-<pre><code class="language-typescript">interface KafkaMessage {
-    nodeId: number
-    timestamp: number
-    payload: Process[] | NetworkInterface[] | Memory | Cpu | IOUsage | DiskUsage
-    type: 'PROCESS' | 'NETWORK_INTERFACE' | 'MEMORY' | 'CPU' | 'IO_USAGE' | 'DISK_USAGE'
-}
-</code></pre>
-<h3 id="data-in-namespace"><a class="header" href="#data-in-namespace">Data in namespace</a></h3>
-<p>Note that a process runs in container such as <code>Docker</code>, <code>LXC</code> ... or runs in a VM has its own namespace.</p>
-<h3 id="sample-data-from-procpidnetdev-file"><a class="header" href="#sample-data-from-procpidnetdev-file">Sample data from <code>/proc/$PID/net/dev</code> file</a></h3>
-<table><thead><tr><th>Interface name</th><th>Receive</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th>Transmit</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr></thead><tbody>
-<tr><td></td><td>bytes</td><td>packets</td><td>errs</td><td>drop</td><td>fifo</td><td>frame</td><td>compressed</td><td>multicast</td><td>bytes</td><td>packets</td><td>errs</td><td>drop</td><td>fifo</td><td>colls</td><td>carrier</td><td>compressed</td></tr>
-<tr><td>lo</td><td>2469224</td><td>19558</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2469224</td><td>19558</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-</tbody></table>
-<h2 id="helpful-tools"><a class="header" href="#helpful-tools">Helpful tools</a></h2>
-<p>Some useful command lines:</p>
+<li>Tra cứu thông tin chi tiết tuyến xe, bao gồm:
 <ul>
-<li><code>sysstat</code></li>
-<li><code>df</code></li>
-<li><code>free</code></li>
+<li>Biểu đồ giờ xuất bến</li>
+<li>Các trạm đi qua</li>
+<li>Thông tin giá vé</li>
+<li>Thời gian hoạt động</li>
+<li>Ngoài ra, người dùng có thể dễ dàng tìm thấy thông tin chi tiết về tất cả các trạm dừng gần vị trí hiện tại nhất.</li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="appendix"><a class="header" href="#appendix">Appendix</a></h1>
-<p>The following sections show how to deploy &amp; operate the entire system.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="github-workflows-settings"><a class="header" href="#github-workflows-settings">Github workflows settings</a></h1>
-<p>We recommend to run github runners inside <a href="https://linuxcontainers.org/lxc/introduction/">Linux container</a> (<code>LXC</code>).</p>
-<p>For details about self-hosted github runners, visit <a href="https://docs.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners">https://docs.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners</a>.</p>
-<p>For LXC installation and usage, you can visit our guides <a href="devops/./LXCContainer.html">here</a>.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="linux-container-lxc"><a class="header" href="#linux-container-lxc">Linux container (LXC)</a></h1>
-<h2 id="install-lxc"><a class="header" href="#install-lxc">Install LXC</a></h2>
-<p>Full documentation about installation goes <a href="https://linuxcontainers.org/lxc/getting-started">here</a>.
-For security reasons, we create an unprivileged container as a user by these following steps:</p>
-<h3 id="init-configurations"><a class="header" href="#init-configurations">Init configurations</a></h3>
-<pre><code class="language-bash">mkdir -p ~/.config/lxc
-cp /etc/lxc/default.conf ~/.config/lxc/default.conf
-MS_UID=&quot;$(grep &quot;$(id -un)&quot; /etc/subuid  | cut -d : -f 2)&quot;
-ME_UID=&quot;$(grep &quot;$(id -un)&quot; /etc/subuid  | cut -d : -f 3)&quot;
-MS_GID=&quot;$(grep &quot;$(id -un)&quot; /etc/subgid  | cut -d : -f 2)&quot;
-ME_GID=&quot;$(grep &quot;$(id -un)&quot; /etc/subgid  | cut -d : -f 3)&quot;
-echo &quot;lxc.idmap = u 0 $MS_UID $ME_UID&quot; &gt;&gt; ~/.config/lxc/default.conf
-echo &quot;lxc.idmap = g 0 $MS_GID $ME_GID&quot; &gt;&gt; ~/.config/lxc/default.conf
-</code></pre>
-<h3 id="download-container"><a class="header" href="#download-container">Download container</a></h3>
-<p>Run this command to start download:</p>
-<pre><code class="language-bash">systemd-run --unit=hpc-unit --user --scope -p &quot;Delegate=yes&quot; -- lxc-create -t download -n hpc-container
-</code></pre>
-<p>Then, the console will print list of distibution, choose distribution <code>centos</code>, release <code>7</code> and host computer's architecture. After downloading successful, your terminal should print result like this:</p>
-<pre><code class="language-script">Downloading the image index
-
----
-DIST        RELEASE ARCH    VARIANT BUILD
----
-almalinux   8       amd64   default 20230123_23:10
-almalinux   8       arm64   default 20230123_23:14
-almalinux   8       ppc64el default 20230123_23:08
-..... Other distribution
----
-
-Distribution: 
-centos
-Release: 
-7
-Architecture: 
-amd64
-
-Downloading the image index
-Downloading the rootfs
-Downloading the metadata
-The image cache is now ready
-Unpacking the rootfs
-
----
-You just created a Centos 7 x86_64 (20230123_22:38) container.
-</code></pre>
-<h3 id="start-container"><a class="header" href="#start-container">Start container</a></h3>
-<p>Run lxc container with allocating an empty delegated cgroup:</p>
-<pre><code class="language-bash">systemd-run --unit=hpc-unit --user --scope -p &quot;Delegate=yes&quot; -- lxc-start hpc-container
-</code></pre>
-<p>To confirm its status:</p>
-<pre><code class="language-bash">lxc-info -n my-container
-lxc-ls -f
-</code></pre>
-<p>And get a shell inside it with:</p>
-<pre><code class="language-bash">lxc-attach -n hpc-container
-</code></pre>
-<p>Stopping it can be done with:</p>
-<pre><code class="language-bash">lxc-stop -n my-container
-</code></pre>
-<p>And finally removing it with:</p>
-<pre><code class="language-bash">lxc-destroy -n my-container
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="user-guide"><a class="header" href="#user-guide">User guide</a></h1>
-<p>User guide here ... (Web UI, how to interact ...)</p>
+</li>
+<li>Tìm đường thông minh 🚌
+<ul>
+<li>Gợi ý cho người dùng tuyến đường thuận tiện và nhanh nhất theo hệ thống giao thông công cộng địa phương</li>
+<li>Đặc biệt, những gợi ý này được đưa ra dựa trên những dữ liệu thực về các tuyến xe đang hoạt động tại thời điểm tìm kiếm.</li>
+</ul>
+</li>
+<li>Xem thời gian chờ xe buýt
+<ul>
+<li>Người dùng có thể kiểm tra thời gian xe buýt 🚌 đến trạm được cung cấp bởi dữ liệu thời gian 🕛 thực được từ GPS 📍 của xe.</li>
+</ul>
+</li>
+<li>Theo dõi hành trình xe buýt và nhắc xuống trạm
+<ul>
+<li>BusMap cung cấp tính năng theo dõi lộ trình xe di chuyển và hỗ trợ đọc tên các trạm sắp đến, khắc phục tình trạng xuống sai trạm, giúp người dùng an tâm hơn khi di chuyển bằng giao thông công cộng.</li>
+</ul>
+</li>
+</ul>
+<h3 id="strengths-Điểm-mạnh"><a class="header" href="#strengths-Điểm-mạnh">Strengths (Điểm mạnh)</a></h3>
+<ul>
+<li>BusMap cung cấp thông tin về các tuyến xe buýt và các điểm đến trên toàn quốc, giúp người dùng dễ dàng tìm kiếm địa điểm và kết hợp các phương tiện di chuyển khác nhau.</li>
+<li>Ứng dụng BusMap đã được phát triển và nâng cấp liên tục để cải thiện trải nghiệm người dùng.</li>
+<li>Có phiên bản ứng dụng trên cả hai nền tảng iOS và Android.</li>
+<li>Hỗ trợ ngôn ngữ tiếng Việt, giúp người dùng có thể sử dụng dễ dàng hơn.</li>
+<li>Có các tính năng bổ sung như tìm kiếm điểm đến theo vị trí hiện tại, đề xuất tuyến đường tối ưu, và đưa ra các thông tin về tình trạng giao thông trên các tuyến đường.</li>
+</ul>
+<h3 id="weaknesses-Điểm-yếu"><a class="header" href="#weaknesses-Điểm-yếu">Weaknesses (Điểm yếu)</a></h3>
+<ul>
+<li>Không cập nhật kịp thời về tình trạng xe buýt, khiến cho thông tin trên ứng dụng có thể không chính xác.</li>
+<li>Các chức năng của ứng dụng còn hạn chế, chưa đáp ứng được nhu cầu của một số người dùng.</li>
+<li>Không cung cấp thông tin về giá vé và giá vé của các hãng xe khác nhau không đồng nhất.</li>
+<li>Có một số địa điểm không được liệt kê hoặc thông tin không đầy đủ.</li>
+</ul>
+<h3 id="opportunities-cơ-hội"><a class="header" href="#opportunities-cơ-hội">Opportunities (Cơ hội)</a></h3>
+<ul>
+<li>Ngày càng có nhiều người dùng sử dụng các dịch vụ di chuyển công cộng để giảm thiểu giao thông đường bộ và giảm ô nhiễm.</li>
+<li>Có thể mở rộng ứng dụng tới các quốc gia khác trong khu vực Đông Nam Á, nơi có nhu cầu sử dụng xe buýt và các phương tiện công cộng khác.</li>
+</ul>
+<h3 id="threats-Đe-dọa"><a class="header" href="#threats-Đe-dọa">Threats (Đe dọa)</a></h3>
+<ul>
+<li>Cạnh tranh với các ứng dụng di chuyển khác</li>
+<li>Nếu thông tin về tình trạng giao thông và tình trạng xe buýt trên các tuyến đường không được cập nhật kịp thời, người dùng có thể mất niềm tin vào ứng dụng.</li>
+<li>Phụ thuộc vào tình trạng giao thông để cung cấp thông tin về thời gian và tuyến đường đi</li>
+</ul>
+<h2 id="gobus"><a class="header" href="#gobus">Go!Bus</a></h2>
+<h2 id="bus-moovi"><a class="header" href="#bus-moovi">Bus Moovi</a></h2>
+<h2 id="vbus"><a class="header" href="#vbus">vBus</a></h2>
+<h2 id="timbus"><a class="header" href="#timbus">timbus</a></h2>
 
                     </main>
 
